@@ -1,0 +1,9 @@
+apache 3 2 5 4 8 2 9
+windows 10 4 25
+mouse 12 0 2 10 6
+keyboard 15 0 5  
+proc1 4 2 6 2 6 8 10 12 5
+proc2 8 3 9 3 5 7 3
+proc3 19 5 6 2 9
+proc4 27 7 2 7 1
+proc5 13 3 1 6 8
