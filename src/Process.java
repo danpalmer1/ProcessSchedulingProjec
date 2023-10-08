@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Process {
     private int pid; //the process id, which can be the process index in the scenario file
     private String name;
@@ -19,20 +22,20 @@ public class Process {
     private int ioWaitTime;  //the total time the process needs to wait in the I/O queue
     //info from file
     private int priority; //priority of the process as indicated in the file
-    private int[] cpuBurstTimes;
-    private int[] ioBurstTimes;
+    private List<Integer> cpuBurstTimes = new ArrayList<>();
+    private List<Integer> ioBurstTimes = new ArrayList<>();
 
-     public Process(int pid, String name, int priority, int[] cpuBurstTimes, int[] ioBurstTimes) {
+     public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
         super();
         this.pid = pid;
         this.state = "NEW";
         this.priority = priority;
         this.cpuBurstTimes = cpuBurstTimes;
         this.ioBurstTimes = ioBurstTimes;
-        this.arrivalTime = -1;
+        this.arrivalTime = arrivalTime;
         this.startTime = -1;
         this.finishTime = -1;
-        this.turnaroundTime = 01;
+        this.turnaroundTime = -1;
         this.ioWaitTime = -1;
     }
 
@@ -124,19 +127,19 @@ public class Process {
         this.priority = priority;
     }
 
-    public int[] getCpuBurstTimes() {
+    public List<Integer> getCpuBurstTimes() {
         return cpuBurstTimes;
     }
 
-    public void setCpuBurstTimes(int[] cpuBurstTimes) {
+    public void setCpuBurstTimes(List<Integer> cpuBurstTimes) {
         this.cpuBurstTimes = cpuBurstTimes;
     }
 
-    public int[] getIoBurstTimes() {
+    public List<Integer> getIoBurstTimes() {
         return ioBurstTimes;
     }
 
-    public void setIoBurstTimes(int[] ioBurstTimes) {
+    public void setIoBurstTimes(List<Integer> ioBurstTimes) {
         this.ioBurstTimes = ioBurstTimes;
     }
 
