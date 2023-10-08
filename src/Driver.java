@@ -10,7 +10,6 @@ public class Driver {
 		// Start with the code to ask the user for the input scenario file and the scheduling parameters (algorithm, quantum time (only for RR), running mode, etc.).
 		int fileSelection, algo, qtmTime, mode;
 		Scanner sc = new Scanner(System.in);
-        mode = sc.nextInt();
 		do {
 			System.out.print("Please select a running mode: "+
 			"\n(0) = auto" + 
