@@ -10,29 +10,24 @@ public class Driver {
 		// Start with the code to ask the user for the input scenario file and the scheduling parameters (algorithm, quantum time (only for RR), running mode, etc.).
 		int fileSelection, algo, qtmTime, mode;
 		Scanner sc = new Scanner(System.in);
-       System.out.print("Please select a running mode: "+
+        mode = sc.nextInt();
+		do {
+			System.out.print("Please select a running mode: "+
 			"\n(0) = auto" + 
 			"\n(1) = manual");
-        mode = sc.nextInt();
-        while(mode < 0 || mode > 1) {
-            System.out.println("Please enter a valid selection (0 or 1): ");
         	mode = sc.nextInt();
-        }
-		System.out.print("Please select a scenario 1-3: ");
-        fileSelection = sc.nextInt();
-        while(fileSelection < 1 || fileSelection > 3) {
-            System.out.println("Please enter a valid scenario (1-3): ");
-            fileSelection = sc.nextInt();
-        }
+		} while(mode < 0 || mode > 1);
+		do {
+			System.out.print("Please select a scenario 1-3: ");
+        	fileSelection = sc.nextInt();
+		} while(fileSelection < 1 || fileSelection > 3);
 		String file = "src/Scenarios/scenario" + fileSelection + ".txt";
-		System.out.print("Please select a scheduling algorithm: "+
+		do {
+			System.out.print("Please select a scheduling algorithm: "+
 			"\n(1) = PS" + 
 			"\n(2) = PS w/ RR");
-        algo = sc.nextInt();
-        while(algo < 1 || algo > 2) {
-            System.out.println("Please enter a valid selection (1 or 2): ");
         	algo = sc.nextInt();
-        }
+		} while(algo < 1 || algo > 2);
 		//TODO: if they selection PS w/ rr, we need to ask for quantum time
 		sc.close();
 		try {

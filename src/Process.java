@@ -15,25 +15,29 @@ public class Process {
      */
     //time variables
     private int arrivalTime; //the system time that the process is created
-    private int startTime;
     private int finishTime; //the system time that the process terminates
     private int turnaroundTime; //the total execution time of a process from start to finish
     private int waitTime; // the total time the process needs to wait in the ready queue
     private int ioWaitTime;  //the total time the process needs to wait in the I/O queue
     //info from file
     private int priority; //priority of the process as indicated in the file
-    private List<Integer> cpuBurstTimes = new ArrayList<>();
-    private List<Integer> ioBurstTimes = new ArrayList<>();
+    private List<Integer> cpuBurstList = new ArrayList<>();
+    private List<Integer> ioBurstList = new ArrayList<>();
+    private boolean flag; //false = cpu, true = io
+    private int currentBurst; //index in burst list
+    private int currentBurstLeft; //burst left
 
      public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
         super();
         this.pid = pid;
         this.state = "NEW";
         this.priority = priority;
-        this.cpuBurstTimes = cpuBurstTimes;
-        this.ioBurstTimes = ioBurstTimes;
+        this.cpuBurstList = cpuBurstTimes;
+        this.ioBurstList = ioBurstTimes;
         this.arrivalTime = arrivalTime;
-        this.startTime = -1;
+        this.flag = false;
+        this.currentBurst = 0;
+        this.currentBurstLeft = cpuBurstList.get(0);
         this.finishTime = -1;
         this.turnaroundTime = -1;
         this.ioWaitTime = -1;
@@ -68,14 +72,6 @@ public class Process {
 
     public void setArrivalTime(int arrivalTime) {
         this.arrivalTime = arrivalTime;
-    }
-
-    public int getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(int startTime) {
-        this.startTime = startTime;
     }
 
     public int getFinishTime() {
@@ -127,26 +123,61 @@ public class Process {
         this.priority = priority;
     }
 
-    public List<Integer> getCpuBurstTimes() {
-        return cpuBurstTimes;
+    //getter and setter for cpu burst list
+    public List<Integer> getCPUBurstList() {
+        return cpuBurstList;
     }
 
-    public void setCpuBurstTimes(List<Integer> cpuBurstTimes) {
-        this.cpuBurstTimes = cpuBurstTimes;
+    public void setCPUBurstList(List<Integer> cpuBurstTimes) {
+        this.cpuBurstList = cpuBurstTimes;
     }
 
-    public List<Integer> getIoBurstTimes() {
-        return ioBurstTimes;
+    //getter and setter for IO burst list
+    public List<Integer> getIOBurstList() {
+        return ioBurstList;
     }
 
-    public void setIoBurstTimes(List<Integer> ioBurstTimes) {
-        this.ioBurstTimes = ioBurstTimes;
+    public void setIOBurstList(List<Integer> ioBurstTimes) {
+        this.ioBurstList = ioBurstTimes;
+    }
+
+    //tells whether to look in cpu or io list
+    public boolean getBurstFlag() {
+        return flag;
+    }
+
+    public void setNextBurstFlag(boolean flag) {
+        this.flag = flag;
+    }
+
+    //tracks index in cpu or io list
+    public int getCurrentBurstIndex() {
+        return currentBurst;
+    }
+
+    public void setCurrentBurstIndex(int newIndex) {
+        this.currentBurst = newIndex;
+    }
+
+    //tracks burst left
+    public int getCurrentBurstLeft() {
+         return currentBurstLeft;
+    }
+
+    //set CPU burst
+    public void setCPUBurst(int newBurst) {
+        cpuBurstList.set(currentBurst, newBurst);
+    }
+
+    //set io burst
+    public void setIOBurst(int newBurst) {
+        ioBurstList.set(currentBurst, newBurst);
     }
 
     public String toString() {
 		return  "Process [name=" + name + ", id=" + pid 
-			    + ", arrivalTime=" + arrivalTime + ", cpuBurst=" + cpuBurstTimes 
-                + ", ioBurst=" + ioBurstTimes 
+			    + ", arrivalTime=" + arrivalTime + ", cpuBurst=" + cpuBurstList 
+                + ", ioBurst=" + ioBurstList
 			    + ", priority=" + priority + "]";
 	}
 }

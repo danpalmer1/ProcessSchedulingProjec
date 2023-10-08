@@ -1,12 +1,12 @@
 import java.util.List;
 
 public class FCFS extends SchedulingAlgorithm {
-      public FCFS(List<PCB> queue) {
+      public FCFS(List<Process> queue) {
 		super("FCFS", queue);
 	}
 
 
-      public PCB pickNextProcess() {
+      public Process pickNextProcess() {
 		return readyQueue.get(0);
       }
 }
