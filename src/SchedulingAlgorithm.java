@@ -25,7 +25,9 @@ public abstract class SchedulingAlgorithm {
 			System.out.println("System time: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
+
 				//if process arrives 
+				System.out.println("Arrival Time: " + proc.getArrivalTime() + "\n SystemTime = " + systemTime );
 				if(proc.getArrivalTime() == systemTime) {
 					readyQueue.add(proc); //add to ready for cpu queue
 					proc.setState("READY"); //set state to ready 
