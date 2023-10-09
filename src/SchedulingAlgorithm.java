@@ -21,14 +21,32 @@ public abstract class SchedulingAlgorithm {
 	public void schedule() {
 	System.out.println("Scheduler: " + name);
 		while(!procs.isEmpty() || !readyQueue.isEmpty()) {
-			System.out.print("System time: " + systemTime + " ");
-			for(Process proc: procs) {
+			System.out.println("System time: " + systemTime + " ");
+			//iterate thru untouched processes
+			for(Process proc : procs) {
+				//if process arrives 
 				if(proc.getArrivalTime() == systemTime) {
-					readyQueue.add(proc);
+					readyQueue.add(proc); //add to ready for cpu queue
+					proc.setState("READY"); //set state to ready 
 				}
 			}
 			procs.removeAll(readyQueue);
-			System.out.println(readyQueue);
+			//iterate thru readyQueue to check for finished bursts
+			for(Process proc : readyQueue) {
+				if(proc.getCPUBurstList().get(proc.getCurrentBurstIndex()) == 0) {
+					//if current index > io burst list size, we've finished the last cpu burst
+					if(proc.getCurrentBurstIndex() > proc.getIOBurstList().size()-1) {
+						proc.setFinishTime(systemTime);
+						proc.setState("TERMINATED");
+						finishedProcs.add(proc); //add to finished processes
+					} else {
+						proc.setState("WAITING");
+						ioReadyQueue.add(proc); //add to io ready queue
+					}
+					readyQueue.remove(proc); //remove process from ready queue
+				}
+			}
+
 			if(!readyQueue.isEmpty()){
 			curProcess = pickNextProcess();
 			print();
