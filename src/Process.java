@@ -14,6 +14,7 @@ public class Process {
      * TERMINATED: The process has already finished its tasks
      */
     //time variables
+    private int startTime;
     private int arrivalTime; //the system time that the process is created
     private int finishTime; //the system time that the process terminates
     private int turnaroundTime; //the total execution time of a process from start to finish
@@ -39,9 +40,31 @@ public class Process {
         this.flag = false;
         this.currentBurst = 0;
         this.currentBurstLeft = cpuBurstList.get(0);
+        this.startTime = -1;
         this.finishTime = -1;
         this.turnaroundTime = -1;
         this.ioWaitTime = -1;
+    }
+
+
+
+
+
+    public void setWaitingTime(int waitTime) {
+		this.waitTime = waitTime;
+	}
+	public void increaseWaitingTime(int burst) {
+		//Increase the waitingTime variable with burst.
+		this.waitTime += burst;
+    }
+
+    public int getStartTime(){
+        return startTime;
+
+    }
+
+    public void setStartTime(int startTime){
+    this.startTime = startTime;
     }
 
     public int getPid() {
