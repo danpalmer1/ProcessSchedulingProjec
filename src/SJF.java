@@ -8,7 +8,7 @@ public class SJF extends SchedulingAlgorithm {
 
 
       public Process pickNextProcess() {
-		Collections.sort(readyQueue, (o1, o2) -> o1.getCurrentBurstLeft() - o2.getCurrentBurstLeft());
+		Collections.sort(readyQueue, (o1, o2) -> o1.getCPUBurstList().get(o1.getCurrentBurstIndex()) - o2.getCPUBurstList().get(o2.getCurrentBurstIndex()));
 		return readyQueue.get(0);
       }
 }

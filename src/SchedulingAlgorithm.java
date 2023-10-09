@@ -16,6 +16,7 @@ public abstract class SchedulingAlgorithm {
     	      this.procs = queue;
     	      this.readyQueue = new ArrayList<>();
     	      this.finishedProcs = new ArrayList<>();
+			  this.ioReadyQueue = new ArrayList<>();
       }
 	
 	public void schedule() {
@@ -25,19 +26,16 @@ public abstract class SchedulingAlgorithm {
 			System.out.println("System time: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
-
 				//if process arrives 
-				System.out.println("Arrival Time: " + proc.getArrivalTime() + "\n SystemTime = " + systemTime );
 				if(proc.getArrivalTime() == systemTime) {
 					readyQueue.add(proc); //add to ready for cpu queue
 					proc.setState("READY"); //set state to ready 
 				}
 			}
-			System.out.println("Ready Queue " + readyQueue); //ready queue returning null
 			procs.removeAll(readyQueue);
 			//iterate thru readyQueue to check for finished bursts
 			for(Process proc : readyQueue) {
-				if(proc.getCurrentBurstLeft() == 0) {
+				if(proc.getCPUBurstList().get(proc.getCurrentBurstIndex()) == 0) {
 					//if current index > io burst list size, we've finished the last cpu burst
 					if(proc.getCurrentBurstIndex() > proc.getIOBurstList().size()-1) {
 						proc.setFinishTime(systemTime);
@@ -50,9 +48,9 @@ public abstract class SchedulingAlgorithm {
 					readyQueue.remove(proc); //remove process from ready queue
 				}
 			}
-			//iterate thru io readyQueue to check for finished bursts
+			//iterate thru io readyQueue to check for finished io bursts
 			for(Process proc : ioReadyQueue) 
-				if(proc.getCurrentBurstLeft() == 0) {
+				if(proc.getIOBurstList().get(proc.getCurrentBurstIndex()) == 0) {
 					proc.setState("READY");
 					readyQueue.add(proc); //add to cpu queue
 					ioReadyQueue.remove(proc); //remove from io queue

@@ -25,7 +25,6 @@ public class Process {
     private List<Integer> ioBurstList = new ArrayList<>();
     private boolean flag; //false = cpu, true = io
     private int currentBurst; //index in burst list
-    private int currentBurstLeft; //burst left
 
      public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
         super();
@@ -38,7 +37,6 @@ public class Process {
         this.arrivalTime = arrivalTime;
         this.flag = false;
         this.currentBurst = 0;
-        this.currentBurstLeft = cpuBurstList.get(0);
         this.finishTime = -1;
         this.turnaroundTime = -1;
         this.ioWaitTime = -1;
@@ -158,11 +156,6 @@ public class Process {
 
     public void setCurrentBurstIndex(int newIndex) {
         this.currentBurst = newIndex;
-    }
-
-    //tracks burst left
-    public int getCurrentBurstLeft() {
-         return currentBurstLeft;
     }
 
     //set CPU burst
