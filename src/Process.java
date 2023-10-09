@@ -30,6 +30,7 @@ public class Process {
      public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
         super();
         this.pid = pid;
+        this.name = name;
         this.state = "NEW";
         this.priority = priority;
         this.cpuBurstList = cpuBurstTimes;

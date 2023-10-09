@@ -31,6 +31,7 @@ public abstract class SchedulingAlgorithm {
 					proc.setState("READY"); //set state to ready 
 				}
 			}
+			System.out.println("Ready Queue " + readyQueue); //ready queue returning null
 			procs.removeAll(readyQueue);
 			//iterate thru readyQueue to check for finished bursts
 			for(Process proc : readyQueue) {

@@ -9,6 +9,7 @@ public class Driver {
 	public static void main(String[] args) {
 		// Start with the code to ask the user for the input scenario file and the scheduling parameters (algorithm, quantum time (only for RR), running mode, etc.).
 		int fileSelection, algo, qtmTime, mode;
+		String algoName;
 		Scanner sc = new Scanner(System.in);
 		do {
 			System.out.print("Please select a running mode: "+
@@ -24,10 +25,22 @@ public class Driver {
 		do {
 			System.out.print("Please select a scheduling algorithm: "+
 			"\n(1) = PS" + 
-			"\n(2) = PS w/ RR");
+			"\n(2) = PS w/ RR" + 
+			"\n(3) = FCFS"
+			);
         	algo = sc.nextInt();
-		} while(algo < 1 || algo > 2);
-		//TODO: if they selection PS w/ rr, we need to ask for quantum time
+			if(algo == 1){
+			algoName = "PS";
+			} else if(algo == 2) {
+			algoName = "PSwRR";
+			} else {
+			algoName = "FCFS";
+			}
+		} while(algo < 1 || algo > 3);
+		if(algo == 2){
+		System.out.println("Please enter quantum time");
+		qtmTime = sc.nextInt();
+		}
 		sc.close();
 		try {
 			Scanner scan = new Scanner(new File(file));
@@ -50,14 +63,15 @@ public class Driver {
 			}
 			
 			System.out.println("All processes have been successfully read");
-
-			// SchedulingAlgorithm scheduler = null;
+			SchedulingAlgorithm scheduler = null;
 			
-			// switch(algo) {
-			// case "FCFS":
-			// 	scheduler = new FCFS(allProcs); break;
-			// }
-			// scheduler.schedule();
+			switch(algoName) {
+			case "FCFS":
+				scheduler = new FCFS(allProcs); 
+			case "PS":
+				scheduler = new PriorityScheduling(allProcs);
+			}
+			scheduler.schedule();
 			scan.close();
 			
 		} catch (FileNotFoundException e) {
