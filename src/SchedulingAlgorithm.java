@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class SchedulingAlgorithm {
     
@@ -22,7 +23,7 @@ public abstract class SchedulingAlgorithm {
 	public void schedule() {
 		System.out.println("Scheduler: " + name);
 		//while there are processes left
-		while(!procs.isEmpty() || !readyQueue.isEmpty()) {
+		while(systemTime < 20) {
 			System.out.println("System time: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
@@ -55,13 +56,12 @@ public abstract class SchedulingAlgorithm {
 					readyQueue.add(proc); //add to cpu queue
 					ioReadyQueue.remove(proc); //remove from io queue
 				}
-			
+			System.out.println(readyQueue);
 			/*
 			 * TODO:
 			 * - pick a processes depending on the algorithm
 			 * - 
 			 */
-
 			systemTime++;
 		}
 	}
