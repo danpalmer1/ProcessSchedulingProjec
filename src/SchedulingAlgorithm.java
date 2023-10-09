@@ -17,55 +17,37 @@ public abstract class SchedulingAlgorithm {
     	      this.readyQueue = new ArrayList<>();
     	      this.finishedProcs = new ArrayList<>();
       }
-	
+
 	public void schedule() {
-		System.out.println("Scheduler: " + name);
-		//while there are processes left
+	System.out.println("Scheduler: " + name);
 		while(!procs.isEmpty() || !readyQueue.isEmpty()) {
-			System.out.println("System time: " + systemTime + " ");
-			//iterate thru untouched processes
-			for(Process proc : procs) {
-
-				//if process arrives 
-				System.out.println("Arrival Time: " + proc.getArrivalTime() + "\n SystemTime = " + systemTime );
-				if(proc.getArrivalTime() == systemTime) {
-					readyQueue.add(proc); //add to ready for cpu queue
-					proc.setState("READY"); //set state to ready 
-				}
-			}
-			System.out.println("Ready Queue " + readyQueue); //ready queue returning null
+			System.out.print("System time: " + systemTime + " ");
+			for(Process proc: procs) {
+				if(proc.getArrivalTime() == systemTime) 
+					readyQueue.add(proc);
 			procs.removeAll(readyQueue);
-			//iterate thru readyQueue to check for finished bursts
-			for(Process proc : readyQueue) {
-				if(proc.getCurrentBurstLeft() == 0) {
-					//if current index > io burst list size, we've finished the last cpu burst
-					if(proc.getCurrentBurstIndex() > proc.getIOBurstList().size()-1) {
-						proc.setFinishTime(systemTime);
-						proc.setState("TERMINATED");
-						finishedProcs.add(proc); //add to finished processes
-					} else {
-						proc.setState("WAITING");
-						ioReadyQueue.add(proc); //add to io ready queue
-					}
-					readyQueue.remove(proc); //remove process from ready queue
-				}
-			}
-			//iterate thru io readyQueue to check for finished bursts
-			for(Process proc : ioReadyQueue) 
-				if(proc.getCurrentBurstLeft() == 0) {
-					proc.setState("READY");
-					readyQueue.add(proc); //add to cpu queue
-					ioReadyQueue.remove(proc); //remove from io queue
-				}
-			
-			/*
-			 * TODO:
-			 * - pick a processes depending on the algorithm
-			 * - 
-			 */
-
+			curProcess = pickNextProcess();
+			print();
+			if(curProcess.getStartTime() < 0)
+				curProcess.setStartTime(systemTime);
+			CPU.execute(curProcess, 1);
+			for(Process other: readyQueue)
+				if(other != curProcess) other.increaseWaitingTime(1);
 			systemTime++;
+			int index = curProcess.getCurrentBurstIndex();
+			if(curProcess.getCPUBurstList().get(index) == 0) {
+				curProcess.setFinishTime(systemTime);
+				readyQueue.remove(curProcess);
+				finishedProcs.add(curProcess);
+				System.out.println("Process " + curProcess.getName() + " finished at " + systemTime
+						+ ", TAT = " + curProcess.getTurnaroundTime() + ", WAT: " + curProcess.getWaitTime()); 
+			
+			}
+			System.out.println();
+			}
+			
 		}
+
 	}
 	
 	//Selects the next task using the appropriate scheduling algorithm
