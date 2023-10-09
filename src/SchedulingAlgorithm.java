@@ -30,7 +30,6 @@ public abstract class SchedulingAlgorithm {
 			procs.removeAll(readyQueue);
 			System.out.println(readyQueue);
 			if(!readyQueue.isEmpty()){
-			System.out.println("Inside");
 			curProcess = pickNextProcess();
 			print();
 			if(curProcess.getStartTime() < 0)
