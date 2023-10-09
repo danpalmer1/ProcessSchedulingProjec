@@ -15,6 +15,7 @@ public class Process {
      */
     //time variables
     private int arrivalTime; //the system time that the process is created
+    private int startTime; //the system time the process begins executes
     private int finishTime; //the system time that the process terminates
     private int turnaroundTime; //the total execution time of a process from start to finish
     private int waitTime; // the total time the process needs to wait in the ready queue
@@ -71,6 +72,14 @@ public class Process {
 
     public void setArrivalTime(int arrivalTime) {
         this.arrivalTime = arrivalTime;
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
     }
 
     public int getFinishTime() {

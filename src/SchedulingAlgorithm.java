@@ -60,9 +60,39 @@ public abstract class SchedulingAlgorithm {
 			/*
 			 * TODO:
 			 * - pick a processes depending on the algorithm
-			 * - 
 			 */
+
+			 if(!readyQueue.isEmpty()) {
+				curProcess = pickNextProcess();
+	//		    - call print() to print simulation events: CPU, ready queue, ..
+				print();
+	//		    - update the start time of the selected process (curProcess)
+				if(curProcess.getStartTime() < 0) curProcess.setStartTime(systemTime);
+	//		    - Call CPU.execute() to let the CPU execute 1 CPU burst unit time of curProcess
+				CPU.execute(curProcess, 1);
+	//		    - Increase 1 to the waiting time of other processes in the ready queue
+				for(Process other : readyQueue)
+					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
+	//		    - Increase systemTime by 1
+				systemTime++;
+	//		    - Check if the remaining CPU burst of curProcess = 0
+				if(curProcess.getState() == "TERMINATED") { //curProcess finished 
+					
+	//		        - Update finishTime of curProcess
+					curProcess.setFinishTime(systemTime);
+	//		        - remove curProcess from readyQueue
+					readyQueue.remove(curProcess);
+	//		        - add curProcess to the finished queue (finishedProcs)
+					finishedProcs.add(curProcess);
+	//		        - Print to console a message displaying process name, terminated time, 
+	//		                         startTime, turnaroundTime, waitingTime
+					System.out.println("Process " + curProcess.getName() + " finished at " + systemTime
+							+ ", TAT = " + curProcess.getTurnaroundTime() 
+							+ ", WAT: " + curProcess.getWaitTime());
+				}
+			} else {
 			systemTime++;
+			}
 		}
 	}
 	
