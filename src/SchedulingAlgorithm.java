@@ -22,11 +22,15 @@ public abstract class SchedulingAlgorithm {
 	System.out.println("Scheduler: " + name);
 		while(!procs.isEmpty() || !readyQueue.isEmpty()) {
 			System.out.print("System time: " + systemTime + " ");
-			for(Process proc: procs) 
-				if(proc.getArrivalTime() == systemTime) 
+			for(Process proc: procs) {
+				if(proc.getArrivalTime() == systemTime) {
 					readyQueue.add(proc);
+				}
+			}
 			procs.removeAll(readyQueue);
+			System.out.println(readyQueue);
 			if(!readyQueue.isEmpty()){
+			System.out.println("Inside");
 			curProcess = pickNextProcess();
 			print();
 			if(curProcess.getStartTime() < 0)
@@ -34,7 +38,7 @@ public abstract class SchedulingAlgorithm {
 			CPU.execute(curProcess, 1);
 			for(Process other: readyQueue)
 				if(other != curProcess) other.increaseWaitingTime(1);
-			//systemTime++;
+			systemTime++;
 			int index = curProcess.getCurrentBurstIndex();
 			if(curProcess.getCPUBurstList().get(index) == 0) {
 				curProcess.setFinishTime(systemTime);
@@ -44,13 +48,15 @@ public abstract class SchedulingAlgorithm {
 						+ ", TAT = " + curProcess.getTurnaroundTime() + ", WAT: " + curProcess.getWaitTime()); 
 			
 			} 
+			} else {
 			systemTime++;
+			}
 			
 			}
 			System.out.println();
 			}
 			
-		}
+		
 
 	
 	
