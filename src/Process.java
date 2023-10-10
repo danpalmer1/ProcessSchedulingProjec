@@ -189,9 +189,9 @@ public class Process {
     }
 
     public String toString() {
-		return  "Process [name=" + name + ", id=" + pid 
-			    + ", arrivalTime=" + arrivalTime + ", cpuBurst=" + cpuBurstList 
-                + ", ioBurst=" + ioBurstList
-			    + ", priority=" + priority + "]";
+		return  "PROCESS [NAME=" + name + ", ID=" + pid 
+			    + ", ARRIVAL-TIME=" + arrivalTime + ", CPU-BURST=" + cpuBurstList 
+                + ", IO-BURST=" + ioBurstList
+			    + ", PRIORITY=" + priority + "]";
 	}
 }
