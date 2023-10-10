@@ -13,7 +13,7 @@ public class FCFS extends SchedulingAlgorithm {
 
       @Override
       public Process pickNextIOProcess() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'pickNextIOProcess'");
+            return ioReadyQueue.get(0);
+
       }
 }

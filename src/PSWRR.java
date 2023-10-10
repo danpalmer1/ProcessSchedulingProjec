@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.List;
 
 
@@ -7,7 +8,8 @@ public class PSWRR extends SchedulingAlgorithm {
 	}
 
      public Process pickNextProcess() {
-	 	System.out.println("qtmTime: " + qtmTime);
+	    Collections.sort(readyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
+		
     	  return readyQueue.get(0);
       }
 
