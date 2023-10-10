@@ -11,16 +11,17 @@ public abstract class SchedulingAlgorithm {
 	protected Process curProcess; //current selected process by the scheduler
 	protected int systemTime; //system time or simulation time steps
  
-      public SchedulingAlgorithm(String name, List<Process> queue) {
+    public SchedulingAlgorithm(String name, List<Process> queue) {
     	      this.name = name;
     	      this.procs = queue;
     	      this.readyQueue = new ArrayList<>();
     	      this.finishedProcs = new ArrayList<>();
-      }
+			  this.ioReadyQueue = new ArrayList<>();
+     }
 
 	public void schedule() {
-	System.out.println("Scheduler: " + name);
-		while(!procs.isEmpty() || !readyQueue.isEmpty()) {
+		System.out.println("Scheduler: " + name);
+		while(systemTime < 35) {
 			System.out.println("System time: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
@@ -31,61 +32,82 @@ public abstract class SchedulingAlgorithm {
 				}
 			}
 			procs.removeAll(readyQueue);
-			//iterate thru readyQueue to check for finished bursts
-			for(Process proc : readyQueue) {
-				if(proc.getCPUBurstList().get(proc.getCurrentBurstIndex()) == 0) {
-					//if current index > io burst list size, we've finished the last cpu burst
-					if(proc.getCurrentBurstIndex() > proc.getIOBurstList().size()-1) {
-						proc.setFinishTime(systemTime);
-						proc.setState("TERMINATED");
-						finishedProcs.add(proc); //add to finished processes
-					} else {
-						proc.setState("WAITING");
-						ioReadyQueue.add(proc); //add to io ready queue
+			//execute IO device
+			if(!ioReadyQueue.isEmpty()) {
+				curProcess = pickNextIOProcess();
+				printIO();
+				IODevice.execute(curProcess, 1);
+				for(Process other : ioReadyQueue) 
+					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
+				int index = curProcess.getCurrentBurstIndex();
+				if(curProcess.getIOBurstList().get(index) == 0) { //current burst is finished
+						//switch process to execute next cpu process
+						curProcess.setState("READY");
+						curProcess.setCurrentBurstIndex(curProcess.getCurrentBurstIndex() + 1);
+						ioReadyQueue.remove(curProcess);
+						readyQueue.add(curProcess);
 					}
-					readyQueue.remove(proc); //remove process from ready queue
 				}
-			}
-
+			//execute next cpu process
 			if(!readyQueue.isEmpty()){
-			curProcess = pickNextProcess();
-			print();
-			if(curProcess.getStartTime() < 0)
-				curProcess.setStartTime(systemTime);
-			CPU.execute(curProcess, 1);
-			for(Process other: readyQueue)
-				if(other != curProcess) other.increaseWaitingTime(1);
-			systemTime++;
-			int index = curProcess.getCurrentBurstIndex();
-			if(curProcess.getCPUBurstList().get(index) == 0) {
-				curProcess.setFinishTime(systemTime);
-				readyQueue.remove(curProcess);
-				finishedProcs.add(curProcess);
-				System.out.println("Process " + curProcess.getName() + " finished at " + systemTime
-						+ ", TAT = " + curProcess.getTurnaroundTime() + ", WAT: " + curProcess.getWaitTime()); 
-			
+				curProcess = pickNextProcess();
+				print();
+				if(curProcess.getStartTime() < 0) //first time process is executed
+					curProcess.setStartTime(systemTime);
+
+				CPU.execute(curProcess, 1); //subtract 1 from the burst
+				for(Process other : readyQueue) 
+					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
+				int index = curProcess.getCurrentBurstIndex();
+				if(curProcess.getCPUBurstList().get(index) == 0) { //current burst is finished
+					if(curProcess.getCurrentBurstIndex() > curProcess.getIOBurstList().size()) { //this is the final cpu burst therefore the process is finished
+						curProcess.setState("TERMINATED");
+						curProcess.setFinishTime(systemTime + 1);
+						readyQueue.remove(curProcess);
+						finishedProcs.add(curProcess);
+					System.out.println("Process " + curProcess.getName() + " finished at " + systemTime
+							+ ", TAT = " + curProcess.getTurnaroundTime() + ", WAT: " + curProcess.getWaitTime()); 
+					} else {
+						//switch process to execute io process
+						curProcess.setState("WAITING");
+						readyQueue.remove(curProcess);
+						ioReadyQueue.add(curProcess);
+					}
+				} 
 			} 
-			} else {
 			systemTime++;
-			}
-			
-			}
 			System.out.println();
-			}
+			} 
+		}
+			
 			
 		
 
 	
 	
 	//Selects the next task using the appropriate scheduling algorithm
-      public abstract Process pickNextProcess();
+    public abstract Process pickNextProcess();
+
+	//Selects the next io task using the appropriate scheduling algorithm
+	public abstract Process pickNextIOProcess();
 
       //print simulation step
-      public void print() {
+    public void print() {
 		System.out.println("CPU: " + curProcess == null ? " idle " : curProcess.toString()); 
-		System.out.println("Ready queue: [");
+		System.out.print("Ready queue: [");
 		for(Process proc : readyQueue)
-			System.out.println(proc.getName() + " ");
-		System.out.println("]");
+			System.out.print(proc.getName() + ", ");
+		System.out.print("]");
+		System.out.println();
+      }
+
+	    //print simulation step
+    public void printIO() {
+		System.out.println("IO: " + curProcess == null ? " idle " : curProcess.toString()); 
+		System.out.print("IO ready queue: [");
+		for(Process proc : ioReadyQueue)
+			System.out.print(proc.getName() + ", ");
+		System.out.print("]");
+		System.out.println();
       }
 }

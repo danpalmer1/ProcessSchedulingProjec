@@ -46,18 +46,6 @@ public class Process {
         this.ioWaitTime = -1;
     }
 
-
-
-
-
-    public void setWaitingTime(int waitTime) {
-		this.waitTime = waitTime;
-	}
-	public void increaseWaitingTime(int burst) {
-		//Increase the waitingTime variable with burst.
-		this.waitTime += burst;
-    }
-
     public int getStartTime(){
         return startTime;
 
@@ -183,9 +171,8 @@ public class Process {
         this.currentBurst = newIndex;
     }
 
-    //tracks burst left
-    public int getCurrentBurstLeft() {
-         return currentBurstLeft;
+    public int getCPUBurst() {
+        return cpuBurstList.get(currentBurst);
     }
 
     //set CPU burst
@@ -193,6 +180,9 @@ public class Process {
         cpuBurstList.set(currentBurst, newBurst);
     }
 
+    public int getIOBurst() {
+        return ioBurstList.get(currentBurst);
+    }
     //set io burst
     public void setIOBurst(int newBurst) {
         ioBurstList.set(currentBurst, newBurst);
