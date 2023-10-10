@@ -2,8 +2,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SJF extends SchedulingAlgorithm {
-      public SJF (List<Process> queue) {
-		super("SJF", queue);
+      public SJF (List<Process> queue, int qtmTime) {
+		super("SJF", queue, qtmTime);
 	}
 
 

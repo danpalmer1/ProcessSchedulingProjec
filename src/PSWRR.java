@@ -2,11 +2,12 @@ import java.util.List;
 
 
 public class PSWRR extends SchedulingAlgorithm {
-      public PSWRR (List<Process> queue) {
-		super("Priority Scheduling", queue);
+      public PSWRR (List<Process> queue, int qtmTime) {
+		super("Priority Scheduling", queue, qtmTime);
 	}
 
      public Process pickNextProcess() {
+	 	System.out.println("qtmTime: " + qtmTime);
     	  return readyQueue.get(0);
       }
 
