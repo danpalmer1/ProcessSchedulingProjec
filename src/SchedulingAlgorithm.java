@@ -21,7 +21,7 @@ public abstract class SchedulingAlgorithm {
 
 	public void schedule() {
 		System.out.println("Scheduler: " + name);
-		while(systemTime < 35) {
+		while(!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
 			System.out.println("System time: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
@@ -60,7 +60,7 @@ public abstract class SchedulingAlgorithm {
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
 				if(curProcess.getCPUBurstList().get(index) == 0) { //current burst is finished
-					if(curProcess.getCurrentBurstIndex() > curProcess.getIOBurstList().size()) { //this is the final cpu burst therefore the process is finished
+					if(curProcess.getCurrentBurstIndex() > curProcess.getIOBurstList().size() - 1) { //this is the final cpu burst therefore the process is finished
 						curProcess.setState("TERMINATED");
 						curProcess.setFinishTime(systemTime + 1);
 						readyQueue.remove(curProcess);
