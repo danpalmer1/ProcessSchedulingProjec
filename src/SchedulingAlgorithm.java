@@ -10,10 +10,12 @@ public abstract class SchedulingAlgorithm {
 	protected List<Process> finishedProcs;	//list of terminated processes
 	protected Process curProcess; //current selected process by the scheduler
 	protected int systemTime; //system time or simulation time steps
+	protected int qtmTime;
  
-    public SchedulingAlgorithm(String name, List<Process> queue) {
+    public SchedulingAlgorithm(String name, List<Process> queue, int qtmTime) {
     	      this.name = name;
     	      this.procs = queue;
+			  this.qtmTime = qtmTime;
     	      this.readyQueue = new ArrayList<>();
     	      this.finishedProcs = new ArrayList<>();
 			  this.ioReadyQueue = new ArrayList<>();

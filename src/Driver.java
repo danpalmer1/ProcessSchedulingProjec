@@ -9,8 +9,8 @@ public class Driver {
 	public static void main(String[] args) {
 		// Start with the code to ask the user for the input scenario file and the scheduling parameters (algorithm, quantum time (only for RR), running mode, etc.).
 		int fileSelection, algo, qtmTime, mode;
-		String algoName;
 		Scanner sc = new Scanner(System.in);
+		qtmTime = -1;
 		do {
 			System.out.print("Please select a running mode: "+
 			"\n(0) = auto" + 
@@ -61,11 +61,11 @@ public class Driver {
 			
 			switch(algo) {
 			case 1:
-				scheduler = new PriorityScheduling(allProcs); break;
+				scheduler = new PriorityScheduling(allProcs, qtmTime); break;
 			case 2:
-				scheduler = new PSWRR(allProcs); break;
+				scheduler = new PSWRR(allProcs, qtmTime); break;
 			case 3:
-				scheduler = new FCFS(allProcs); break;
+				scheduler = new FCFS(allProcs, qtmTime); break;
 			}
 			scheduler.schedule();
 			scan.close();

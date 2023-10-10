@@ -2,8 +2,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class PriorityScheduling extends SchedulingAlgorithm {
-      public PriorityScheduling (List<Process> queue) {
-		super("Priority Scheduling", queue);
+      public PriorityScheduling (List<Process> queue, int qtmTime) {
+		super("Priority Scheduling", queue, qtmTime);
 	}
 
 

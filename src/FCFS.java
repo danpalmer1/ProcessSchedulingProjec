@@ -1,8 +1,8 @@
 import java.util.List;
 
 public class FCFS extends SchedulingAlgorithm {
-      public FCFS(List<Process> queue) {
-		super("FCFS", queue);
+      public FCFS(List<Process> queue, int qtmTime) {
+		super("FCFS", queue, qtmTime);
 	}
 
 
@@ -13,7 +13,7 @@ public class FCFS extends SchedulingAlgorithm {
 
       @Override
       public Process pickNextIOProcess() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'pickNextIOProcess'");
+            return ioReadyQueue.get(0);
+
       }
 }
