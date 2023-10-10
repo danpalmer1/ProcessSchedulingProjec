@@ -67,9 +67,11 @@ public class Driver {
 			
 			switch(algoName) {
 			case "FCFS":
-				scheduler = new FCFS(allProcs); 
+				scheduler = new FCFS(allProcs);  break;
 			case "PS":
-				scheduler = new PriorityScheduling(allProcs);
+				scheduler = new PriorityScheduling(allProcs); break;
+			case "PSwRR":
+				scheduler = new PSWRR(allProcs); break;
 			}
 			scheduler.schedule();
 			scan.close();

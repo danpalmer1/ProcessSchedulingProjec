@@ -19,9 +19,10 @@ public abstract class SchedulingAlgorithm {
       }
 
 	public void schedule() {
+	
 	System.out.println("Scheduler: " + name);
 		while(!procs.isEmpty() || !readyQueue.isEmpty()) {
-			System.out.print("System time: " + systemTime + " ");
+			System.out.println("System time: " + systemTime + " ");
 			for(Process proc: procs) {
 				if(proc.getArrivalTime() == systemTime) {
 					readyQueue.add(proc);
@@ -30,7 +31,6 @@ public abstract class SchedulingAlgorithm {
 			procs.removeAll(readyQueue);
 			System.out.println(readyQueue);
 			if(!readyQueue.isEmpty()){
-			System.out.println("Inside");
 			curProcess = pickNextProcess();
 			print();
 			if(curProcess.getStartTime() < 0)
@@ -51,24 +51,29 @@ public abstract class SchedulingAlgorithm {
 			} else {
 			systemTime++;
 			}
-			
+		
 			}
 			System.out.println();
+	
 			}
 			
 		
-
+	
 	
 	
 	//Selects the next task using the appropriate scheduling algorithm
       public abstract Process pickNextProcess();
 
+
       //print simulation step
       public void print() {
 		System.out.println("CPU: " + curProcess == null ? " idle " : curProcess.toString()); 
-		System.out.println("Ready queue: [");
+		System.out.println();
+		System.out.print("Ready queue: [");
 		for(Process proc : readyQueue)
-			System.out.println(proc.getName() + " ");
-		System.out.println("]");
+			System.out.print(proc.getName() + ",");
+		System.out.print("]");
+		System.out.println();
+
       }
 }
