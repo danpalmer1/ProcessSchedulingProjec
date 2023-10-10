@@ -29,13 +29,7 @@ public class Driver {
 			"\n(3) = FCFS"
 			);
         	algo = sc.nextInt();
-			if(algo == 1){
-			algoName = "PS";
-			} else if(algo == 2) {
-			algoName = "PSwRR";
-			} else {
-			algoName = "FCFS";
-			}
+			
 		} while(algo < 1 || algo > 3);
 		if(algo == 2){
 		System.out.println("Please enter quantum time");
@@ -65,11 +59,13 @@ public class Driver {
 			System.out.println("All processes have been successfully read");
 			SchedulingAlgorithm scheduler = null;
 			
-			switch(algoName) {
-			case "FCFS":
-				scheduler = new FCFS(allProcs); 
-			case "PS":
-				scheduler = new PriorityScheduling(allProcs);
+			switch(algo) {
+			case 1:
+				scheduler = new PriorityScheduling(allProcs); break;
+			case 2:
+				scheduler = new PSWRR(allProcs); break;
+			case 3:
+				scheduler = new FCFS(allProcs); break;
 			}
 			scheduler.schedule();
 			scan.close();
