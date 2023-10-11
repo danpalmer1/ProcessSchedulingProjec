@@ -23,7 +23,6 @@ public class PSWRR extends SchedulingAlgorithm {
 
 	@Override
 	public void schedule() {
-	System.out.println("OVERDIDEEE");
     System.out.println("Scheduler: " + name);
     while (!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
         System.out.println("System time: " + systemTime + " ");

@@ -28,22 +28,22 @@ public abstract class SchedulingAlgorithm {
 			boolean flag;
 			Scanner sc = new Scanner(System.in);
 			do {
-			System.out.print("Please select a scenario \n (0) AUTO \n (1) MANUAL ");
+			System.out.print("PLEASE SELECT MODE \n (0) AUTO \n (1) MANUAL ");
         	mode = sc.nextInt();
 			} while(mode < 0 || mode > 1);
 		if(mode == 0){
 			flag = true;
 		} else {
+		
 			flag = false;
 		}
-		System.out.println("Scheduler: " + name);
+		System.out.println("SCHEDULER: " + name);
+		System.out.println("PRESS ENTER TO PROCEDE");
 		while(!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
 			if(!flag){
-				System.out.print("Enter key to continue");
         		key = sc.nextLine();
 			}
-			
-			System.out.println("System time: " + systemTime + " ");
+			System.out.println("SYSTEM-TIME: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
 				//if process arrives 
