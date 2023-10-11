@@ -23,14 +23,14 @@ public abstract class SchedulingAlgorithm {
      }
 
 	public void schedule() {
-			String key;
-			int mode;
-			boolean flag;
-			Scanner sc = new Scanner(System.in);
-			do {
+		String key = "";
+		int mode;
+		boolean flag;
+		Scanner sc = new Scanner(System.in);
+		do {
 			System.out.print("PLEASE SELECT MODE \n (0) AUTO \n (1) MANUAL ");
         	mode = sc.nextInt();
-			} while(mode < 0 || mode > 1);
+		} while(mode < 0 || mode > 1);
 		if(mode == 0){
 			flag = true;
 		} else {
@@ -53,11 +53,12 @@ public abstract class SchedulingAlgorithm {
 				}
 			}
 			procs.removeAll(readyQueue);
+
 			//execute IO device
 			if(!ioReadyQueue.isEmpty()) {
 				curProcess = pickNextIOProcess();
-				printIO();
 				IODevice.execute(curProcess, 1);
+				printIO();
 				for(Process other : ioReadyQueue) 
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
@@ -72,11 +73,11 @@ public abstract class SchedulingAlgorithm {
 			//execute next cpu process
 			if(!readyQueue.isEmpty()){
 				curProcess = pickNextProcess();
-				print();
 				if(curProcess.getStartTime() < 0) //first time process is executed
 					curProcess.setStartTime(systemTime);
 
 				CPU.execute(curProcess, 1); //subtract 1 from the burst
+				print();
 				for(Process other : readyQueue) 
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
@@ -99,6 +100,7 @@ public abstract class SchedulingAlgorithm {
 			systemTime++;
 			System.out.println();
 			} 
+			sc.close();
 		}
 			
 			
