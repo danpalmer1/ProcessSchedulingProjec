@@ -11,12 +11,7 @@ public class Driver {
 		int fileSelection, algo, qtmTime, mode;
 		Scanner sc = new Scanner(System.in);
 		qtmTime = -1;
-		do {
-			System.out.print("Please select a running mode: "+
-			"\n(0) = auto" + 
-			"\n(1) = manual");
-        	mode = sc.nextInt();
-		} while(mode < 0 || mode > 1);
+		
 		do {
 			System.out.print("Please select a scenario 1-3: ");
         	fileSelection = sc.nextInt();
@@ -35,7 +30,6 @@ public class Driver {
 		System.out.println("Please enter quantum time");
 		qtmTime = sc.nextInt();
 		}
-		sc.close();
 		try {
 			Scanner scan = new Scanner(new File(file));
 			List<Process> allProcs = new ArrayList<>();
@@ -68,7 +62,6 @@ public class Driver {
 				scheduler = new FCFS(allProcs, qtmTime); break;
 			}
 			scheduler.schedule();
-			scan.close();
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
