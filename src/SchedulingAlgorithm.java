@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class SchedulingAlgorithm {
     
@@ -22,8 +23,26 @@ public abstract class SchedulingAlgorithm {
      }
 
 	public void schedule() {
+			String key;
+			int mode;
+			boolean flag;
+			Scanner sc = new Scanner(System.in);
+			do {
+			System.out.print("Please select a scenario \n (0) AUTO \n (1) MANUAL ");
+        	mode = sc.nextInt();
+			} while(mode < 0 || mode > 1);
+		if(mode == 0){
+			flag = true;
+		} else {
+			flag = false;
+		}
 		System.out.println("Scheduler: " + name);
 		while(!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
+			if(!flag){
+				System.out.print("Enter key to continue");
+        		key = sc.nextLine();
+			}
+			
 			System.out.println("System time: " + systemTime + " ");
 			//iterate thru untouched processes
 			for(Process proc : procs) {
