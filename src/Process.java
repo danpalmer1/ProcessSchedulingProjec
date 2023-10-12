@@ -26,9 +26,9 @@ public class Process {
     private List<Integer> ioBurstList = new ArrayList<>();
     private boolean flag; //false = cpu, true = io
     private int currentBurst; //index in burst list
-    private int currentBurstLeft; //burst left
+    private int qtmTimeLeft;
 
-     public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
+    public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
         super();
         this.pid = pid;
         this.name = name;
@@ -39,11 +39,11 @@ public class Process {
         this.arrivalTime = arrivalTime;
         this.flag = false;
         this.currentBurst = 0;
-        this.currentBurstLeft = cpuBurstList.get(0);
         this.startTime = -1;
         this.finishTime = -1;
         this.turnaroundTime = -1;
         this.ioWaitTime = -1;
+        this.qtmTimeLeft = -1;
     }
 
     public int getStartTime(){
@@ -187,6 +187,14 @@ public class Process {
     public void setIOBurst(int newBurst) {
         ioBurstList.set(currentBurst, newBurst);
     }
+
+    public int getQtmTimeLeft() {
+            return qtmTimeLeft;
+        }
+
+    public void setQtmTimeLeft(int qtmTimeLeft) {
+            this.qtmTimeLeft = qtmTimeLeft;
+        }
 
     public String toString() {
 		return  "PROCESS [NAME=" + name + ", ID=" + pid 

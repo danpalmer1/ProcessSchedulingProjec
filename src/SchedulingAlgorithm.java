@@ -72,7 +72,12 @@ public abstract class SchedulingAlgorithm {
 				}
 			//execute next cpu process
 			if(!readyQueue.isEmpty()){
-				curProcess = pickNextProcess();
+				curProcess = pickNextProcess(); 
+				//once we pick a process, we continue to execute its cpu burst for qtmTime until qtmTimeLet == 0 
+				// the process can be interrupted from executing until qtmTimeLeft == 0 when:
+				//		- a process of higher priority is added to the readyQueue
+				//			+ need to set previous process qtmTimeLeft back to -1
+				//			+ set curProce
 				if(curProcess.getStartTime() < 0) //first time process is executed
 					curProcess.setStartTime(systemTime);
 
