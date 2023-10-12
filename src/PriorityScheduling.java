@@ -15,7 +15,6 @@ public class PriorityScheduling extends SchedulingAlgorithm {
 
 	@Override
 	public Process pickNextIOProcess() {
-		Collections.sort(ioReadyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
 		return ioReadyQueue.get(0);
 	}
 }
