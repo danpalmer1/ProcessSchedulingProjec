@@ -43,12 +43,16 @@ public abstract class SchedulingAlgorithm {
 			if(!flag){
         		key = sc.nextLine();
 			}
-			System.out.println("SYSTEM-TIME: " + systemTime + " ");
+			System.out.println("--------------------");
+			System.out.printf("| SYSTEM-TIME: %-3d |\n", systemTime);
+			System.out.println("--------------------\n");
+		
 			//iterate thru untouched processes
 			for(Process proc : procs) {
 				//if process arrives 
 				if(proc.getArrivalTime() == systemTime) {
 					readyQueue.add(proc); //add to ready for cpu queue
+					System.out.println(proc.getName() + ": ADDED TO THE CPU QUEUE");
 					proc.setState("READY"); //set state to ready 
 				}
 			}
@@ -68,6 +72,7 @@ public abstract class SchedulingAlgorithm {
 						curProcess.setCurrentBurstIndex(curProcess.getCurrentBurstIndex() + 1);
 						ioReadyQueue.remove(curProcess);
 						readyQueue.add(curProcess);
+						System.out.println(curProcess.getName() + ": MOVED TO CPU QUEUE");
 					}
 				}
 			//execute next cpu process
@@ -87,13 +92,23 @@ public abstract class SchedulingAlgorithm {
 						curProcess.setFinishTime(systemTime + 1);
 						readyQueue.remove(curProcess);
 						finishedProcs.add(curProcess);
-					System.out.println("PROCESS " + curProcess.getName() + " FINISHED AT " + systemTime
-							+ ", TAT = " + curProcess.getTurnaroundTime() + ", WAT: " + curProcess.getWaitTime()); 
+						System.out.println("------------------------");
+						System.out.printf("| PROCESS %-12s |\n", curProcess.getName());
+						System.out.printf("| FINISHED AT %-8d |\n", systemTime);
+						System.out.printf("| TAT = %-14d |\n", curProcess.getTurnaroundTime());
+						System.out.printf("| WAT: %-15d |\n", curProcess.getWaitTime());
+						System.out.println("------------------------");
+
+
+
+
+
 					} else {
 						//switch process to execute io process
 						curProcess.setState("WAITING");
 						readyQueue.remove(curProcess);
 						ioReadyQueue.add(curProcess);
+						System.out.println(curProcess.getName() + ": MOVED IO QUEUE");
 					}
 				} 
 			} 
@@ -118,10 +133,12 @@ public abstract class SchedulingAlgorithm {
     public void print() {
 		System.out.println("CPU: " + curProcess == null ? " idle " : curProcess.toString()); 
 		// System.out.println("CPU: " + (curProcess == null ? " idle " : curProcess.toString()));
-		System.out.print("READY QUEUE: [");
+			System.out.println();
+			
+		System.out.print("CPU QUEUE: [");
 		for(Process proc : readyQueue)
 			System.out.print(proc.getName() + ", ");
-		System.out.print("]");
+		System.out.print("]\n");
 		System.out.println();
       }
 
@@ -129,7 +146,7 @@ public abstract class SchedulingAlgorithm {
     public void printIO() {
 		System.out.println("IO: " + curProcess == null ? " idle " : curProcess.toString()); 
 		// System.out.println("IO: " + (curProcess == null ? " idle " : curProcess.toString()));
-		System.out.print("IO READY QUEUE: [");
+		System.out.print("\nIO  QUEUE: [");
 		// int len = ioReadyQueue.size()-1;
 		// int count = 0;
 		for(Process proc : ioReadyQueue){
@@ -139,7 +156,7 @@ public abstract class SchedulingAlgorithm {
 			// count++;
 			System.out.print(proc.getName() + ", ");
 		}
-		System.out.print("]");
+		System.out.print("]\n");
 		System.out.println();
       }
 }
