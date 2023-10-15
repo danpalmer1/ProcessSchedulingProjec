@@ -8,17 +8,41 @@ public class PSWRR extends SchedulingAlgorithm {
 	}
 
      public Process pickNextProcess() {
-	     Collections.sort(readyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
-		return readyQueue.get(0);
+            Collections.sort(readyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
+            return readyQueue.get(0);
       }
 
     @Override
 	public Process pickNextIOProcess() {
-		Collections.sort(ioReadyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
-
 		return ioReadyQueue.get(0);
-
 	}
+
+    public boolean priorityTie() {
+        Collections.sort(readyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
+        if(readyQueue.size() > 1) {
+            for(int i = 0; i < readyQueue.size()-1; i++) {
+                if(readyQueue.get(i).getPriority() == readyQueue.get(i+1).getPriority())
+                    return true;
+            }
+        }
+        return false;
+    }
+   
+    private void executeProcess(List<Process> queue) {
+        // if there are items in the queue
+        // if currentProcess.quantumTimeLeft == 0 and there are none with similar priority
+        //     pick a new process from the queue based on priority
+        // else if currentProcess.quantumTimeLeft == 0 and there are processes with similar priority in the queue
+        //     save the current process
+        //     pick a new process that isn't the currentProcess
+        //     set that process to the currentProcess`
+        // else if currentProcess.status == finished OR WAITING (for io))
+        //     pick a new process
+        // else 
+        //     execute the process
+        //     subtract from the quantumTimeLeft
+        //     check if the processs is finished or ready for the IO queue
+    }
 
 	// @Override
 	// public void schedule() {
@@ -87,6 +111,4 @@ public class PSWRR extends SchedulingAlgorithm {
     //     systemTime++;
     //     System.out.println();
     // }
-}
-
 }

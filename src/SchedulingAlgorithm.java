@@ -22,7 +22,7 @@ public abstract class SchedulingAlgorithm {
 			  this.ioReadyQueue = new ArrayList<>();
      }
 
-	public void schedule() {
+	public void schedule(int qtmTime) {
 		String key = "";
 		int input;
 		boolean modeFlag;
@@ -54,11 +54,12 @@ public abstract class SchedulingAlgorithm {
 		}
 		
 	private void executeProcess(List<Process> queue) {
-		if(!queue.isEmpty()){
-			curProcess = pickNextProcess(); 
+		if(!queue.isEmpty()) {
+			curProcess = pickNextProcess();
 			if(curProcess.getStartTime() < 0) //first time process is executed
 				curProcess.setStartTime(systemTime);
 			CPU.execute(curProcess, 1); //subtract 1 from the burst
+			curProcess.setQtmTimeLeft(curProcess.getQtmTimeLeft() - 1);
 			print(readyQueue, true);
 			increaseWaitTime(readyQueue);
 			if(curProcess.getCPUBurstList().get(curProcess.getCurrentBurstIndex()) == 0) { //current burst is finished
@@ -71,6 +72,7 @@ public abstract class SchedulingAlgorithm {
 					readyQueue.remove(curProcess);
 					ioReadyQueue.add(curProcess);
 				}
+				
 			} 
 		} 
 	}
