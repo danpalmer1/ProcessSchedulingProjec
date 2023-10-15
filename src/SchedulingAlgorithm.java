@@ -12,6 +12,8 @@ public abstract class SchedulingAlgorithm {
 	protected Process curProcess; //current selected process by the scheduler
 	protected int systemTime; //system time or simulation time steps
 	protected int qtmTime;
+	protected List<Integer> tat;
+	protected List<Integer> wat;
  
     public SchedulingAlgorithm(String name, List<Process> queue, int qtmTime) {
     	      this.name = name;
@@ -20,6 +22,8 @@ public abstract class SchedulingAlgorithm {
     	      this.readyQueue = new ArrayList<>();
     	      this.finishedProcs = new ArrayList<>();
 			  this.ioReadyQueue = new ArrayList<>();
+			  this.tat = new ArrayList<>();
+			  this.wat = new ArrayList<>();
      }
 
 	public void schedule(int qtmTime) {
@@ -84,6 +88,22 @@ public abstract class SchedulingAlgorithm {
 		finishedProcs.add(process);
 		System.out.println("PROCESS " + process.getName() + " FINISHED AT " + systemTime
 			+ ", TAT = " + process.getTurnaroundTime() + ", AWT: " + process.getWaitTime()); 
+		tat.add(process.getTurnaroundTime());
+		wat.add(process.getWaitTime());
+
+		int sumTat = 0, sumWat= 0;
+		if(readyQueue.isEmpty() && ioReadyQueue.isEmpty()){
+			for(int i = 0; i < tat.size(); i++){
+				sumTat += tat.get(i);
+			}
+			for(int i = 0; i < wat.size(); i++){
+				sumWat += wat.get(i);
+			}
+			double avgTat, avgWat;
+			avgTat = sumTat/tat.size();
+			avgWat = sumWat/wat.size();
+			System.out.println("AVG-TAT: --> " + avgTat +"\nAVG-WAT --> " + avgWat);
+		}
 	}
 
 	private void executeIOProcess(List<Process> queue) {
