@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class PSWRR extends SchedulingAlgorithm {
         // Execute I/O device
         if (!ioReadyQueue.isEmpty()) {
             curProcess = pickNextIOProcess();
-            print(ioReadyQueue);
+            print(ioReadyQueue, false);
             IODevice.execute(curProcess, 1);
             for (Process other : ioReadyQueue)
                 if (other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
@@ -56,7 +55,7 @@ public class PSWRR extends SchedulingAlgorithm {
         // Execute next CPU process using Round Robin
         if (!readyQueue.isEmpty()) {
             curProcess = pickNextProcess();
-            print(readyQueue);
+            print(readyQueue, true);
             if (curProcess.getStartTime() < 0) // First time process is executed
                 curProcess.setStartTime(systemTime);
 

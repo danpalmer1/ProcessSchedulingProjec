@@ -66,6 +66,7 @@ public class Driver {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		sc.close();
 		
 	}
 

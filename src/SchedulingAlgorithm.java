@@ -51,7 +51,7 @@ public abstract class SchedulingAlgorithm {
 			if(!ioReadyQueue.isEmpty()) {
 				curProcess = pickNextIOProcess();
 				IODevice.execute(curProcess, 1);
-				print(ioReadyQueue);
+				print(ioReadyQueue, false);
 				for(Process other : ioReadyQueue) 
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
@@ -75,7 +75,7 @@ public abstract class SchedulingAlgorithm {
 					curProcess.setStartTime(systemTime);
 
 				CPU.execute(curProcess, 1); //subtract 1 from the burst
-				print(readyQueue);
+				print(readyQueue, true);
 				for(Process other : readyQueue) 
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
@@ -101,54 +101,35 @@ public abstract class SchedulingAlgorithm {
 			sc.close();
 		}
 			
-			
-		
-
-	
-	
 	private void checkForArrivedProcess(List<Process> list, int time) {
 		for(Process proc : list) {
 				//if process arrives 
 				if(proc.getArrivalTime() == time) {
 					readyQueue.add(proc); //add to ready for cpu queue
 					proc.setState("READY"); //set state to ready 
+					System.out.println("Process " + proc.getName() + " arrived at " + proc.getArrivalTime());
 				}
 			}
 			procs.removeAll(readyQueue);
 	}
+
+    //print simulation step
+    public void print(List<Process> queue, boolean flag) {
+		System.out.println("CPU: " + curProcess == null ? " idle " : curProcess.toString()); 
+		// System.out.println("CPU: " + (curProcess == null ? " idle " : curProcess.toString()));
+		if(flag)
+			System.out.print("READY QUEUE: [");
+		else System.out.print("IO READY QUEUE: [");
+		for(Process proc : queue)
+			if(proc == queue.get(queue.size() - 1)) System.out.println(proc.getName() + "]");
+			else 
+				System.out.print(proc.getName() + ", ");
+		System.out.println();
+      }
 
 	//Selects the next task using the appropriate scheduling algorithm
     public abstract Process pickNextProcess();
 
 	//Selects the next io task using the appropriate scheduling algorithm
 	public abstract Process pickNextIOProcess();
-
-      //print simulation step
-    public void print(List<Process> queue) {
-		System.out.println("CPU: " + curProcess == null ? " idle " : curProcess.toString()); 
-		// System.out.println("CPU: " + (curProcess == null ? " idle " : curProcess.toString()));
-		System.out.print("READY QUEUE: [");
-		for(Process proc : queue)
-			System.out.print(proc.getName() + ", ");
-		System.out.print("]");
-		System.out.println();
-      }
-
-	//     //print simulation step
-    // public void printIO() {
-	// 	System.out.println("IO: " + curProcess == null ? " idle " : curProcess.toString()); 
-	// 	// System.out.println("IO: " + (curProcess == null ? " idle " : curProcess.toString()));
-	// 	System.out.print("IO READY QUEUE: [");
-	// 	// int len = ioReadyQueue.size()-1;
-	// 	// int count = 0;
-	// 	for(Process proc : ioReadyQueue){
-	// 		// if(len == count){
-	// 		// 	System.out.print(proc.getName());
-	// 		// }
-	// 		// count++;
-	// 		System.out.print(proc.getName() + ", ");
-	// 	}
-	// 	System.out.print("]");
-	// 	System.out.println();
-    //   }
 }
