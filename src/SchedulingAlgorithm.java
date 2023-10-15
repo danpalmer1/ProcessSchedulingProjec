@@ -75,6 +75,7 @@ public abstract class SchedulingAlgorithm {
 					curProcess.setNextBurstFlag(false);
 					readyQueue.remove(curProcess);
 					ioReadyQueue.add(curProcess);
+					System.out.println(curProcess.getName() + " ADDED TO THE IO QUEUE");
 				}
 				
 			} 
@@ -91,18 +92,18 @@ public abstract class SchedulingAlgorithm {
 		tat.add(process.getTurnaroundTime());
 		wat.add(process.getWaitTime());
 
-		int sumTat = 0, sumWat= 0;
+		int sumTat = 0, sumAwt= 0;
 		if(readyQueue.isEmpty() && ioReadyQueue.isEmpty()){
 			for(int i = 0; i < tat.size(); i++){
 				sumTat += tat.get(i);
 			}
 			for(int i = 0; i < wat.size(); i++){
-				sumWat += wat.get(i);
+				sumAwt += wat.get(i);
 			}
-			double avgTat, avgWat;
+			double avgTat, avgAwt;
 			avgTat = sumTat/tat.size();
-			avgWat = sumWat/wat.size();
-			System.out.println("AVG-TAT: --> " + avgTat +"\nAVG-WAT --> " + avgWat);
+			avgAwt = sumAwt/wat.size();
+			System.out.println("AVG-TAT: --> " + avgTat +"\nAVG-AWT: --> " + avgAwt);
 		}
 	}
 
@@ -119,6 +120,7 @@ public abstract class SchedulingAlgorithm {
 						curProcess.setCurrentBurstIndex(curProcess.getCurrentBurstIndex() + 1);
 						ioReadyQueue.remove(curProcess);
 						readyQueue.add(curProcess);
+						System.out.println(curProcess.getName() + " ADED TO THE CPU QUEUE");
 					}
 			}
 	}
