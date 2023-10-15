@@ -44,21 +44,14 @@ public abstract class SchedulingAlgorithm {
         		key = sc.nextLine();
 			}
 			System.out.println("SYSTEM-TIME: " + systemTime + " ");
-			//iterate thru untouched processes
-			for(Process proc : procs) {
-				//if process arrives 
-				if(proc.getArrivalTime() == systemTime) {
-					readyQueue.add(proc); //add to ready for cpu queue
-					proc.setState("READY"); //set state to ready 
-				}
-			}
-			procs.removeAll(readyQueue);
+			
+			checkForArrivedProcess(procs, systemTime);
 
 			//execute IO device
 			if(!ioReadyQueue.isEmpty()) {
 				curProcess = pickNextIOProcess();
 				IODevice.execute(curProcess, 1);
-				printIO();
+				print(ioReadyQueue);
 				for(Process other : ioReadyQueue) 
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
@@ -82,7 +75,7 @@ public abstract class SchedulingAlgorithm {
 					curProcess.setStartTime(systemTime);
 
 				CPU.execute(curProcess, 1); //subtract 1 from the burst
-				print();
+				print(readyQueue);
 				for(Process other : readyQueue) 
 					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
 				int index = curProcess.getCurrentBurstIndex();
@@ -113,6 +106,17 @@ public abstract class SchedulingAlgorithm {
 
 	
 	
+	private void checkForArrivedProcess(List<Process> list, int time) {
+		for(Process proc : list) {
+				//if process arrives 
+				if(proc.getArrivalTime() == time) {
+					readyQueue.add(proc); //add to ready for cpu queue
+					proc.setState("READY"); //set state to ready 
+				}
+			}
+			procs.removeAll(readyQueue);
+	}
+
 	//Selects the next task using the appropriate scheduling algorithm
     public abstract Process pickNextProcess();
 
@@ -120,31 +124,31 @@ public abstract class SchedulingAlgorithm {
 	public abstract Process pickNextIOProcess();
 
       //print simulation step
-    public void print() {
+    public void print(List<Process> queue) {
 		System.out.println("CPU: " + curProcess == null ? " idle " : curProcess.toString()); 
 		// System.out.println("CPU: " + (curProcess == null ? " idle " : curProcess.toString()));
 		System.out.print("READY QUEUE: [");
-		for(Process proc : readyQueue)
+		for(Process proc : queue)
 			System.out.print(proc.getName() + ", ");
 		System.out.print("]");
 		System.out.println();
       }
 
-	    //print simulation step
-    public void printIO() {
-		System.out.println("IO: " + curProcess == null ? " idle " : curProcess.toString()); 
-		// System.out.println("IO: " + (curProcess == null ? " idle " : curProcess.toString()));
-		System.out.print("IO READY QUEUE: [");
-		// int len = ioReadyQueue.size()-1;
-		// int count = 0;
-		for(Process proc : ioReadyQueue){
-			// if(len == count){
-			// 	System.out.print(proc.getName());
-			// }
-			// count++;
-			System.out.print(proc.getName() + ", ");
-		}
-		System.out.print("]");
-		System.out.println();
-      }
+	//     //print simulation step
+    // public void printIO() {
+	// 	System.out.println("IO: " + curProcess == null ? " idle " : curProcess.toString()); 
+	// 	// System.out.println("IO: " + (curProcess == null ? " idle " : curProcess.toString()));
+	// 	System.out.print("IO READY QUEUE: [");
+	// 	// int len = ioReadyQueue.size()-1;
+	// 	// int count = 0;
+	// 	for(Process proc : ioReadyQueue){
+	// 		// if(len == count){
+	// 		// 	System.out.print(proc.getName());
+	// 		// }
+	// 		// count++;
+	// 		System.out.print(proc.getName() + ", ");
+	// 	}
+	// 	System.out.print("]");
+	// 	System.out.println();
+    //   }
 }
