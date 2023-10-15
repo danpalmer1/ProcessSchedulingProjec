@@ -24,8 +24,9 @@ public class Process {
     private int priority; //priority of the process as indicated in the file
     private List<Integer> cpuBurstList = new ArrayList<>();
     private List<Integer> ioBurstList = new ArrayList<>();
-    private boolean flag; //false = cpu, true = io
+    private boolean flag; //true = cpu, false = io
     private int currentBurst; //index in burst list
+    // track how many additional time units the process gets the cpu out of quantumTime
     private int qtmTimeLeft;
 
     public Process(int pid, String name, int arrivalTime, int priority, List<Integer> cpuBurstTimes, List<Integer> ioBurstTimes) {
@@ -37,13 +38,13 @@ public class Process {
         this.cpuBurstList = cpuBurstTimes;
         this.ioBurstList = ioBurstTimes;
         this.arrivalTime = arrivalTime;
-        this.flag = false;
+        this.flag = true;
         this.currentBurst = 0;
         this.startTime = -1;
         this.finishTime = -1;
         this.turnaroundTime = -1;
         this.ioWaitTime = -1;
-        this.qtmTimeLeft = -1;
+        this.qtmTimeLeft = 1; //default to 1 (same as PS)
     }
 
     public int getStartTime(){

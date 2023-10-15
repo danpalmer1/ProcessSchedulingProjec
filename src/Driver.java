@@ -61,11 +61,12 @@ public class Driver {
 			case 3:
 				scheduler = new FCFS(allProcs, qtmTime); break;
 			}
-			scheduler.schedule();
+			scheduler.schedule(qtmTime);
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		sc.close();
 		
 	}
 
