@@ -24,83 +24,88 @@ public abstract class SchedulingAlgorithm {
 
 	public void schedule() {
 		String key = "";
-		int mode;
-		boolean flag;
+		int input;
+		boolean modeFlag;
 		Scanner sc = new Scanner(System.in);
 		do {
 			System.out.print("PLEASE SELECT MODE \n (0) AUTO \n (1) MANUAL ");
-        	mode = sc.nextInt();
-		} while(mode < 0 || mode > 1);
-		if(mode == 0){
-			flag = true;
+        	input = sc.nextInt();
+		} while(input < 0 || input > 1);
+		if(input== 0){
+			modeFlag = true;
 		} else {
 		
-			flag = false;
+			modeFlag = false;
 		}
 		System.out.println("SCHEDULER: " + name);
 		System.out.println("PRESS ENTER TO PROCEDE");
 		while(!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
-			if(!flag){
+			if(!modeFlag){
         		key = sc.nextLine();
 			}
 			System.out.println("SYSTEM-TIME: " + systemTime + " ");
-			
 			checkForArrivedProcess(procs, systemTime);
-
-			//execute IO device
-			if(!ioReadyQueue.isEmpty()) {
-				curProcess = pickNextIOProcess();
-				IODevice.execute(curProcess, 1);
-				print(ioReadyQueue, false);
-				for(Process other : ioReadyQueue) 
-					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
-				int index = curProcess.getCurrentBurstIndex();
-				if(curProcess.getIOBurstList().get(index) == 0) { //current burst is finished
-						//switch process to execute next cpu process
-						curProcess.setState("READY");
-						curProcess.setCurrentBurstIndex(curProcess.getCurrentBurstIndex() + 1);
-						ioReadyQueue.remove(curProcess);
-						readyQueue.add(curProcess);
-					}
-				}
-			//execute next cpu process
-			if(!readyQueue.isEmpty()){
-				curProcess = pickNextProcess(); 
-				//once we pick a process, we continue to execute its cpu burst for qtmTime until qtmTimeLet == 0 
-				// the process can be interrupted from executing until qtmTimeLeft == 0 when:
-				//		- a process of higher priority is added to the readyQueue
-				//			+ need to set previous process qtmTimeLeft back to -1
-				//			+ set curProce
-				if(curProcess.getStartTime() < 0) //first time process is executed
-					curProcess.setStartTime(systemTime);
-
-				CPU.execute(curProcess, 1); //subtract 1 from the burst
-				print(readyQueue, true);
-				for(Process other : readyQueue) 
-					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
-				int index = curProcess.getCurrentBurstIndex();
-				if(curProcess.getCPUBurstList().get(index) == 0) { //current burst is finished
-					if(curProcess.getCurrentBurstIndex() > curProcess.getIOBurstList().size() - 1) { //this is the final cpu burst therefore the process is finished
-						curProcess.setState("TERMINATED");
-						curProcess.setFinishTime(systemTime + 1);
-						readyQueue.remove(curProcess);
-						finishedProcs.add(curProcess);
-					System.out.println("PROCESS " + curProcess.getName() + " FINISHED AT " + systemTime
-							+ ", TAT = " + curProcess.getTurnaroundTime() + ", WAT: " + curProcess.getWaitTime()); 
-					} else {
-						//switch process to execute io process
-						curProcess.setState("WAITING");
-						readyQueue.remove(curProcess);
-						ioReadyQueue.add(curProcess);
-					}
-				} 
-			} 
+			executeIOProcess(ioReadyQueue);
+			executeProcess(readyQueue);
 			systemTime++;
 			System.out.println();
 			} 
 			sc.close();
 		}
-			
+		
+	private void executeProcess(List<Process> queue) {
+		if(!queue.isEmpty()){
+			curProcess = pickNextProcess(); 
+			if(curProcess.getStartTime() < 0) //first time process is executed
+				curProcess.setStartTime(systemTime);
+			CPU.execute(curProcess, 1); //subtract 1 from the burst
+			print(readyQueue, true);
+			increaseWaitTime(readyQueue);
+			if(curProcess.getCPUBurstList().get(curProcess.getCurrentBurstIndex()) == 0) { //current burst is finished
+				if(curProcess.getCurrentBurstIndex() > curProcess.getIOBurstList().size() - 1) { //this is the final cpu burst therefore the process is finished
+					terminate(curProcess);
+				} else {
+					//switch process to execute io process
+					curProcess.setState("WAITING");
+					curProcess.setNextBurstFlag(false);
+					readyQueue.remove(curProcess);
+					ioReadyQueue.add(curProcess);
+				}
+			} 
+		} 
+	}
+
+	private void terminate(Process process) {
+		process.setState("TERMINATED");
+		process.setFinishTime(systemTime + 1);
+		readyQueue.remove(process);
+		finishedProcs.add(process);
+		System.out.println("PROCESS " + process.getName() + " FINISHED AT " + systemTime
+			+ ", TAT = " + process.getTurnaroundTime() + ", AWT: " + process.getWaitTime()); 
+	}
+
+	private void executeIOProcess(List<Process> queue) {
+		if(!ioReadyQueue.isEmpty()) {
+				curProcess = pickNextIOProcess();
+				IODevice.execute(curProcess, 1);
+				print(ioReadyQueue, false);
+				increaseWaitTime(ioReadyQueue);
+				if(curProcess.getIOBurstList().get(curProcess.getCurrentBurstIndex()) == 0) { //current burst is finished
+						//switch process to execute next cpu process
+						curProcess.setState("READY");
+						curProcess.setNextBurstFlag(true);
+						curProcess.setCurrentBurstIndex(curProcess.getCurrentBurstIndex() + 1);
+						ioReadyQueue.remove(curProcess);
+						readyQueue.add(curProcess);
+					}
+			}
+	}
+
+	private void increaseWaitTime(List<Process> queue) {
+		for(Process other : queue) 
+					if(other != curProcess) other.setWaitTime(other.getWaitTime() + 1);
+	}
+
 	private void checkForArrivedProcess(List<Process> list, int time) {
 		for(Process proc : list) {
 				//if process arrives 

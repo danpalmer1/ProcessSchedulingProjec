@@ -24,7 +24,7 @@ public class Process {
     private int priority; //priority of the process as indicated in the file
     private List<Integer> cpuBurstList = new ArrayList<>();
     private List<Integer> ioBurstList = new ArrayList<>();
-    private boolean flag; //false = cpu, true = io
+    private boolean flag; //true = cpu, false = io
     private int currentBurst; //index in burst list
     private int qtmTimeLeft;
 
@@ -37,7 +37,7 @@ public class Process {
         this.cpuBurstList = cpuBurstTimes;
         this.ioBurstList = ioBurstTimes;
         this.arrivalTime = arrivalTime;
-        this.flag = false;
+        this.flag = true;
         this.currentBurst = 0;
         this.startTime = -1;
         this.finishTime = -1;
