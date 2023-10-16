@@ -21,11 +21,12 @@ public class Driver {
 			System.out.print("Please select a scheduling algorithm: "+
 			"\n(1) = PS" + 
 			"\n(2) = PS w/ RR" + 
-			"\n(3) = FCFS"
+			"\n(3) = FCFS" + 
+			"\n(4) = SJF"
 			);
         	algo = sc.nextInt();
 			
-		} while(algo < 1 || algo > 3);
+		} while(algo < 1 || algo > 4);
 		if(algo == 2){
 		System.out.println("Please enter quantum time");
 		qtmTime = sc.nextInt();
@@ -49,7 +50,6 @@ public class Driver {
 				Process proc = new Process(id++, name, arrivalTime, priority, cpuBursts, ioBursts);
 				allProcs.add(proc);
 			}
-			
 			System.out.println("All processes have been successfully read");
 			SchedulingAlgorithm scheduler = null;
 			
@@ -60,6 +60,8 @@ public class Driver {
 				scheduler = new PSWRR(allProcs, qtmTime); break;
 			case 3:
 				scheduler = new FCFS(allProcs, qtmTime); break;
+			case 4:
+				scheduler = new SJF(allProcs, qtmTime); break;
 			}
 			scheduler.schedule(qtmTime);
 			

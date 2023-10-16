@@ -14,6 +14,8 @@ public abstract class SchedulingAlgorithm {
 	protected int qtmTime;
 	protected List<Integer> tat;
 	protected List<Integer> wat;
+	protected int idleTime;
+	protected int numProcess;
  
     public SchedulingAlgorithm(String name, List<Process> queue, int qtmTime) {
     	      this.name = name;
@@ -24,6 +26,8 @@ public abstract class SchedulingAlgorithm {
 			  this.ioReadyQueue = new ArrayList<>();
 			  this.tat = new ArrayList<>();
 			  this.wat = new ArrayList<>();
+			  this.idleTime = idleTime;
+			  this.numProcess = numProcess;
      }
 
 	public void schedule(int qtmTime) {
@@ -43,6 +47,8 @@ public abstract class SchedulingAlgorithm {
 		}
 		System.out.println("SCHEDULER: " + name);
 		System.out.println("PRESS ENTER TO PROCEDE");
+		idleTime = 0;
+		numProcess = procs.size();
 		while(!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
 			if(!modeFlag){
         		key = sc.nextLine();
@@ -51,6 +57,9 @@ public abstract class SchedulingAlgorithm {
 			checkForArrivedProcess(procs, systemTime);
 			executeIOProcess(ioReadyQueue);
 			executeProcess(readyQueue);
+			if(readyQueue.isEmpty()){
+				idleTime += 1;
+			}
 			systemTime++;
 			System.out.println();
 			} 
@@ -75,6 +84,7 @@ public abstract class SchedulingAlgorithm {
 					curProcess.setNextBurstFlag(false);
 					readyQueue.remove(curProcess);
 					ioReadyQueue.add(curProcess);
+					System.out.println(curProcess.getName() + " ADDED TO THE IO QUEUE");
 				}
 				
 			} 
@@ -91,18 +101,24 @@ public abstract class SchedulingAlgorithm {
 		tat.add(process.getTurnaroundTime());
 		wat.add(process.getWaitTime());
 
-		int sumTat = 0, sumWat= 0;
+		int sumTat = 0, sumAwt= 0;
+		float util = 0;
 		if(readyQueue.isEmpty() && ioReadyQueue.isEmpty()){
 			for(int i = 0; i < tat.size(); i++){
 				sumTat += tat.get(i);
 			}
 			for(int i = 0; i < wat.size(); i++){
-				sumWat += wat.get(i);
+				sumAwt += wat.get(i);
 			}
-			double avgTat, avgWat;
+			double avgTat, avgAwt;
 			avgTat = sumTat/tat.size();
-			avgWat = sumWat/wat.size();
-			System.out.println("AVG-TAT: --> " + avgTat +"\nAVG-WAT --> " + avgWat);
+			avgAwt = sumAwt/wat.size();
+			System.out.println("AVG-TAT: --> " + avgTat +"\nAVG-AWT: --> " + avgAwt);
+			idleTime = systemTime - idleTime;
+			util = ((float)idleTime/(float)systemTime) * 100;
+			System.out.println("CPU UTIL: --> " + (int)util + "%");
+			int throughput = systemTime/numProcess;
+			System.out.println("Throughput: --> " + throughput);
 		}
 	}
 
@@ -119,6 +135,7 @@ public abstract class SchedulingAlgorithm {
 						curProcess.setCurrentBurstIndex(curProcess.getCurrentBurstIndex() + 1);
 						ioReadyQueue.remove(curProcess);
 						readyQueue.add(curProcess);
+						System.out.println(curProcess.getName() + " ADED TO THE CPU QUEUE");
 					}
 			}
 	}
