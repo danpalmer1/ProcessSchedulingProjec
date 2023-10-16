@@ -1,14 +1,19 @@
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
 public class PSWRR extends SchedulingAlgorithm {
       public PSWRR (List<Process> queue, int qtmTime) {
-		super("Priority Scheduling", queue, qtmTime);
+		super("Priority Scheduling with Round Robin", queue, qtmTime);
 	}
 
      public Process pickNextProcess() {
-            Collections.sort(readyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
+            if(!priorityTie())
+                Collections.sort(readyQueue, (o1, o2) -> o1.getPriority() - o2.getPriority());
+            else 
+                if(readyQueue.get(0).getQtmTimeLeft() < 0)
+                    readyQueue.get(0).setQtmTimeLeft(qtmTime);
             return readyQueue.get(0);
       }
 
@@ -30,6 +35,11 @@ public class PSWRR extends SchedulingAlgorithm {
    
     private void executeProcess(List<Process> queue) {
         // if there are items in the queue
+        if(!readyQueue.isEmpty()) {
+            pickNextProcess();
+            if(!priorityTie()) {
+
+            }
         // if currentProcess.quantumTimeLeft == 0 and there are none with similar priority
         //     pick a new process from the queue based on priority
         // else if currentProcess.quantumTimeLeft == 0 and there are processes with similar priority in the queue
@@ -42,6 +52,7 @@ public class PSWRR extends SchedulingAlgorithm {
         //     execute the process
         //     subtract from the quantumTimeLeft
         //     check if the processs is finished or ready for the IO queue
+        }
     }
 
 	// @Override
