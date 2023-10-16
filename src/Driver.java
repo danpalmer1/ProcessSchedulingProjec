@@ -49,7 +49,6 @@ public class Driver {
 				Process proc = new Process(id++, name, arrivalTime, priority, cpuBursts, ioBursts);
 				allProcs.add(proc);
 			}
-			
 			System.out.println("All processes have been successfully read");
 			SchedulingAlgorithm scheduler = null;
 			
