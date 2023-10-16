@@ -14,6 +14,7 @@ public abstract class SchedulingAlgorithm {
 	protected int qtmTime;
 	protected List<Integer> tat;
 	protected List<Integer> wat;
+	protected int idleTime;
  
     public SchedulingAlgorithm(String name, List<Process> queue, int qtmTime) {
     	      this.name = name;
@@ -24,6 +25,7 @@ public abstract class SchedulingAlgorithm {
 			  this.ioReadyQueue = new ArrayList<>();
 			  this.tat = new ArrayList<>();
 			  this.wat = new ArrayList<>();
+			  this.idleTime = idleTime;
      }
 
 	public void schedule(int qtmTime) {
@@ -43,6 +45,7 @@ public abstract class SchedulingAlgorithm {
 		}
 		System.out.println("SCHEDULER: " + name);
 		System.out.println("PRESS ENTER TO PROCEDE");
+		idleTime = 0;
 		while(!procs.isEmpty() || !readyQueue.isEmpty() || !ioReadyQueue.isEmpty()) {
 			if(!modeFlag){
         		key = sc.nextLine();
@@ -51,6 +54,9 @@ public abstract class SchedulingAlgorithm {
 			checkForArrivedProcess(procs, systemTime);
 			executeIOProcess(ioReadyQueue);
 			executeProcess(readyQueue);
+			if(readyQueue.isEmpty()){
+				idleTime += 1;
+			}
 			systemTime++;
 			System.out.println();
 			} 
@@ -93,6 +99,7 @@ public abstract class SchedulingAlgorithm {
 		wat.add(process.getWaitTime());
 
 		int sumTat = 0, sumAwt= 0;
+		float util = 0;
 		if(readyQueue.isEmpty() && ioReadyQueue.isEmpty()){
 			for(int i = 0; i < tat.size(); i++){
 				sumTat += tat.get(i);
@@ -104,6 +111,9 @@ public abstract class SchedulingAlgorithm {
 			avgTat = sumTat/tat.size();
 			avgAwt = sumAwt/wat.size();
 			System.out.println("AVG-TAT: --> " + avgTat +"\nAVG-AWT: --> " + avgAwt);
+			idleTime = systemTime - idleTime;
+			util = ((float)idleTime/(float)systemTime) * 100;
+			System.out.println("CPU UTILIZATION: --> " + (int)util + "%");
 		}
 	}
 
